@@ -11,13 +11,14 @@ import NewSong from './components/newSong/NewSong';
 import OwnerDashboard from './components/ownerDashboard/OwnerDashboard';
 import OwnerLogin from './components/ownerLogin/OwnerLogin';
 import Play from './components/play/Play';
+import Places from './components/places/Places';
 
 function App() {
   return (
     <BrowserRouter>
       <Navbar />
       <Switch>
-        <Route exact path='/' component={Login} />
+        <Route exact path='/' component={Places} />
         <Route exact path='/login' component={Login} />
         <Route exact path='/register' component={Register} />
         <Route exact path='/:place/' component={Main} />
