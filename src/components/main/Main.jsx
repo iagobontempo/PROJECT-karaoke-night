@@ -12,11 +12,14 @@ import { Divider, Header, Icon, Button } from 'semantic-ui-react'
 import Play from './Play';
 
 function Main() {
-    const [firstVideoPlay, setFirstVideoPlay] = useState({ id: 1, url: 'https://www.youtube.com/watch?v=O-VGFH3eMhY', youtubeId: 'O-VGFH3eMhY', duration: '5', author: 'PRIMEIRO', createdAt: 5551548, authorId: 555984 })
+    const [firstVideoPlay, setFirstVideoPlay] = useState({ id: 1, url: 'https://www.youtube.com/watch?v=668nUCeBHyY', youtubeId: '668nUCeBHyY', duration: '5', author: 'PRIMEIRO', createdAt: 5551548, authorId: 555984 })
     const [firstVideoCount, setFirstVideoCount] = useState(10)
     const [karaokeList, setKaraokeList] = useState([
-        { id: 1, url: 'https://www.youtube.com/watch?v=O-VGFH3eMhY', youtubeId: 'O-VGFH3eMhY', duration: '5', author: 'SEGUNDO', createdAt: 5551548, authorId: 555984 },
+        { id: 1, url: 'https://www.youtube.com/watch?v=668nUCeBHyY', youtubeId: '668nUCeBHyY', duration: '5', author: 'SEGUNDO', createdAt: 5551548, authorId: 555984 },
     ])
+
+    const [loading, setLoading] = useState(0)
+    const [playing, setPlaying] = useState(false);
 
     useEffect(() => {
         if (karaokeList.length > 1) {
@@ -33,8 +36,19 @@ function Main() {
             }
         } else {
             setFirstVideoCount(5)
+            // startDelay()
         }
-    }, [firstVideoCount, karaokeList]);
+    }, [firstVideoCount, karaokeList, loading]);
+
+    function startDelay() {
+        setTimeout(() => {
+            setLoading(loading + 1);
+        }, 330)
+        if (loading === 100) {
+            setPlaying(true)
+            setLoading(0)
+        }
+    }
 
     async function getDuration(youtubeId) {
         const api = `https://www.googleapis.com/youtube/v3/videos?id=${youtubeId}&part=contentDetails&key=AIzaSyD-2j6cQemL64AhbtI8CScPqqaxCsJNYNY`
@@ -73,7 +87,13 @@ function Main() {
         <MainContainer>
             <Wrapper>
                 {/* <button onClick={getFirstList}></button> */}
-                <Play id={firstVideoPlay.id} youtubeId={firstVideoPlay.youtubeId} duration={firstVideoPlay.duration} />
+                <Play id={firstVideoPlay.id}
+                    youtubeId={firstVideoPlay.youtubeId}
+                    duration={firstVideoPlay.duration}
+                    loading={loading}
+                    playing={playing}
+                    author={firstVideoPlay.author}
+                />
                 <ul>
                     {karaokeList && karaokeList.map(l => (
                         <ListItem key={l.id}
