@@ -13,6 +13,8 @@ import OwnerLogin from './components/ownerLogin/OwnerLogin';
 import Play from './components/play/Play';
 import Places from './components/places/Places';
 
+import GlobalStyle from './style/GlobalStyle'
+
 function App() {
   return (
     <BrowserRouter>
@@ -29,6 +31,8 @@ function App() {
         <Redirect from='*' to='/' />
       </Switch>
       <Footer />
+
+      <GlobalStyle />
     </BrowserRouter>
   );
 }

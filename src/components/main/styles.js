@@ -68,3 +68,16 @@ export const Iframe = styled.iframe`
     z-index: 999;
     border: 0;
 `
+
+export const Blocker = styled.div`
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: #000000;
+    z-index: 9990;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+`

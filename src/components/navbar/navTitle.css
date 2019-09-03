@@ -1,0 +1,50 @@
+  @font-face {
+    font-family: neon;
+    src: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/707108/neon.ttf);
+  }
+  
+  .neon-orange-nav {
+    font-family: neon;
+    color: rgb(214, 66, 251);
+    font-size: 50px;
+    line-height: 50px;
+    text-shadow: 0 0 3vw rgb(217, 10, 244);
+    animation: neon-orange-nav 1s ease infinite;
+    -moz-animation: neon-orange-nav 1s ease infinite;
+    -webkit-animation: neon-orange-nav 1s ease infinite;
+  }
+  
+  .neon-blue-nav {
+    font-family: neon;
+    color: #426DFB;
+    font-size: 50px;
+    line-height: 50px;
+    text-shadow: 0 0 3vw #2356FF;
+    animation: neon-blue-nav 2s linear infinite;
+    -moz-animation: neon-blue-nav 2s linear infinite;
+    -webkit-animation: neon-blue-nav 2s linear infinite;
+    -o-animation: neon-blue-nav 2s linear infinite;
+  }
+  
+  @keyframes neon-orange-nav {
+    0%,
+    100% {
+      text-shadow: 0 0 1vw rgb(250, 22, 201), 0 0 3vw rgb(250, 22, 201), 0 0 10vw rgb(250, 22, 201), 0 0 10vw rgb(214, 66, 251), 0 0 .4vw rgb(40, 150, 254), .5vw .5vw .1vw #147080;
+      color: rgb(204, 40, 254);
+    }
+    50% {
+      text-shadow: 0 0 .5vw rgb(124, 11, 128), 0 0 1.5vw rgb(124, 11, 128), 0 0 5vw rgb(124, 11, 128), 0 0 5vw rgb(124, 11, 128), 0 0 .2vw rgb(124, 11, 128), .5vw .5vw .1vw rgb(47, 10, 64);
+      color: #147080;
+    }
+  }
+  @keyframes neon-blue-nav {
+    0%,
+    100% {
+      text-shadow: 0 0 1vw #1041FF, 0 0 3vw #1041FF, 0 0 10vw #1041FF, 0 0 10vw #1041FF, 0 0 .4vw #8BFDFE, .5vw .5vw .1vw #147280;
+      color: #28D7FE;
+    }
+    50% {
+      text-shadow: 0 0 .5vw #082180, 0 0 1.5vw #082180, 0 0 5vw #082180, 0 0 5vw #082180, 0 0 .2vw #082180, .5vw .5vw .1vw #0A3940;
+      color: #146C80;
+    }
+  }

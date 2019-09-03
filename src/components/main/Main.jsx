@@ -1,54 +1,48 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import axios from 'axios';
 import uuid from 'uuid'
 import moment from 'moment'
 
+import './title.css'
+
 import ListItem from './ListItem';
 import YoutubeForm from './YoutubeForm'
 
-import { MainContainer, Wrapper } from './styles'
+import { MainContainer, Wrapper, Blocker } from './styles'
 
 import { Divider, Header, Icon, Button } from 'semantic-ui-react'
 import Play from './Play';
 
 function Main() {
     const [firstVideoPlay, setFirstVideoPlay] = useState({ id: 1, url: 'https://www.youtube.com/watch?v=668nUCeBHyY', youtubeId: '668nUCeBHyY', duration: '5', author: 'PRIMEIRO', createdAt: 5551548, authorId: 555984 })
-    const [firstVideoCount, setFirstVideoCount] = useState(10)
     const [karaokeList, setKaraokeList] = useState([
         { id: 1, url: 'https://www.youtube.com/watch?v=668nUCeBHyY', youtubeId: '668nUCeBHyY', duration: '5', author: 'SEGUNDO', createdAt: 5551548, authorId: 555984 },
     ])
-
-    const [loading, setLoading] = useState(0)
     const [playing, setPlaying] = useState(false);
 
-    useEffect(() => {
-        if (karaokeList.length > 1) {
+    function getVideoPlay() {
+        if (playing === true && karaokeList.length <= 0) {
+            alert('Não há proximos na fila')
+        } else if (playing === true && karaokeList.length > 0) {
+            setPlaying(false)
+            let kara = karaokeList[0]
+            deleteLink(kara.id)
+            var firstVideo = karaokeList[0]
+            setFirstVideoPlay(firstVideo)
             setTimeout(() => {
-                setFirstVideoCount(firstVideoCount - 1);
-            }, 1000)
-            if (firstVideoCount === 1) {
-                let kara = karaokeList[0]
-                deleteLink(kara.id)
-                var firstVideo = karaokeList[0]
-                var firstVideoDur = firstVideo.duration
-                setFirstVideoPlay(firstVideo)
-                setFirstVideoCount(firstVideoDur)
-            }
-        } else {
-            setFirstVideoCount(5)
-            // startDelay()
-        }
-    }, [firstVideoCount, karaokeList, loading]);
-
-    function startDelay() {
-        setTimeout(() => {
-            setLoading(loading + 1);
-        }, 330)
-        if (loading === 100) {
-            setPlaying(true)
-            setLoading(0)
+                setPlaying(true)
+            }, 5000)
+        } else if (playing === false && karaokeList.length >= 0) {
+            let kara = karaokeList[0]
+            deleteLink(kara.id)
+            firstVideo = karaokeList[0]
+            setFirstVideoPlay(firstVideo)
+            setTimeout(() => {
+                setPlaying(true)
+            }, 5000)
         }
     }
+
 
     async function getDuration(youtubeId) {
         const api = `https://www.googleapis.com/youtube/v3/videos?id=${youtubeId}&part=contentDetails&key=AIzaSyD-2j6cQemL64AhbtI8CScPqqaxCsJNYNY`
@@ -86,11 +80,19 @@ function Main() {
     return (
         <MainContainer>
             <Wrapper>
-                {/* <button onClick={getFirstList}></button> */}
+                {playing &&
+                    <Blocker>
+                        <h1 style={{ marginTop: 10 }}>
+                            <span className="neon-orange">Karaoke</span>
+                            <span className="neon-blue">Night</span>
+                        </h1>
+                        <Button inverted color='teal' onClick={getVideoPlay} content={`Proximo: ${karaokeList[0] ? karaokeList[0].author : 'Ninguem 😢'}`} icon='right arrow' labelPosition='right' />
+                    </Blocker>
+                }
+                <button onClick={getVideoPlay}>PROXIMO: {karaokeList[0] ? karaokeList[0].author : 'Ninguem 😢'}</button>
                 <Play id={firstVideoPlay.id}
                     youtubeId={firstVideoPlay.youtubeId}
                     duration={firstVideoPlay.duration}
-                    loading={loading}
                     playing={playing}
                     author={firstVideoPlay.author}
                 />
