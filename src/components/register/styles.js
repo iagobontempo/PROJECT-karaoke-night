@@ -18,10 +18,6 @@ export const Wrapper = styled.div`
     border-radius: 10px;
     margin-top: 15px;
     padding: 10px;
-
-    @media (max-width: 800px) {
-        width: 95%;
-    }
     
     i {
         margin-bottom: 20px;
