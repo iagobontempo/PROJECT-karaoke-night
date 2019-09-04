@@ -1,15 +1,16 @@
 import styled from 'styled-components';
 
 export const MainContainer = styled.div`
-    height: 80vh;
-    /* background-color: ; */
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-top: 65px;
+    padding-bottom: 45px;
 `;
 
 export const Wrapper = styled.div`
-    background-color: #f7f7f7;
+    background-color: #00000095;
+    color: #ffffff;
     display: flex;
     flex-direction: column;
     width: 800px;
@@ -43,6 +44,11 @@ export const Li = styled.li`
     justify-content: space-between;
     width: 100%;
     font-size: 24px;
+    border-bottom: 1px solid #D4250050;
+
+    :first-child {
+        border-bottom: 2px solid #00B2FF98;
+    }
     
     section {
         display: flex;
@@ -57,6 +63,23 @@ export const ContainerVideo = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    .neon {
+        color: #fff;
+        text-shadow:
+        0 0 5px #fff,
+        0 0 10px #fff,
+        0 0 20px #fff,
+        0 0 40px #0ff,
+        0 0 80px #0ff,
+        0 0 90px #0ff,
+        0 0 100px #0ff,
+        0 0 150px #0ff;
+    }
+
+    section {
+        padding: 50px;
+    }
 
 `
 export const Iframe = styled.iframe`

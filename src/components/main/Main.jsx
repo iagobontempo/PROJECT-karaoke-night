@@ -109,7 +109,7 @@ function Main() {
                     ))}
                 </ul>
                 <Divider horizontal>
-                    <Header as='h4'>
+                    <Header as='h4' style={{ color: '#fff' }}>
                         <Icon name='plus' />
                         Adicione sua musica
                     </Header>
