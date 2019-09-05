@@ -48,6 +48,20 @@ class Firebase {
             uid: this.auth.currentUser.uid
         })
     }
+
+    async getPlace(placeId) {
+        var place = await this.db.collection('users').doc(placeId)
+        place.get()
+            .then((doc) => {
+                if (doc.exists) {
+                    console.log('Document data:', doc.data())
+                } else {
+                    console.log('Document does not exist')
+                }
+            }).catch(function (error) {
+                console.log("Error getting document:", error);
+            })
+    }
 }
 
 export default new Firebase()

@@ -1,8 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Container, Wrapper } from './styles';
 import { Input, Button } from 'semantic-ui-react';
 
+
 function Places() {
+    const [joinId, setJoinId] = useState('')
+
     return (
         <Container>
             <Wrapper>
@@ -18,9 +22,10 @@ function Places() {
                     <h2>
                         Conectar a um local
                         <form>
-                            <Input placeholder='ID do local' />
-                            <Input placeholder='Senha do local' />
-                            <Button>Conectar</Button>
+                            <Input placeholder='ID do local' name="joinId" onChange={e => setJoinId(e.target.value)} />
+                            <Link to={`/${joinId}`}>
+                                <Button>Conectar</Button>
+                            </Link>
                         </form>
                     </h2>
                 </div>
