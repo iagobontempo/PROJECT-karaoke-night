@@ -29,7 +29,7 @@ function Navbar(props) {
                 </>
             ) : (
                     <>
-                        <NavLink to='/Dz1U7o0sBye4HWtaLqzOgpGcYcP2/'>MAIN</NavLink>
+                        <NavLink to='/'><Button>Inicio</Button></NavLink>
                         <Button onClick={handleLogout}>Logout</Button>
                     </>
                 )}

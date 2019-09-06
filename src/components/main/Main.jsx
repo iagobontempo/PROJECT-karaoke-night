@@ -5,6 +5,7 @@ import uuid from 'uuid'
 import moment from 'moment'
 import firebase from '../../firebase'
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { useCollection } from 'react-firebase-hooks/firestore';
 
 import './title.css'
 
@@ -18,12 +19,16 @@ import Play from './Play';
 
 function Main(props) {
     const [user, initialising] = useAuthState(firebase.auth);
-
     const [pass, setPass] = useState('')
     const [place, setPlace] = useState({})
     const [firstVideoPlay, setFirstVideoPlay] = useState({ author: 'Ninguem' })
-    const [karaokeList, setKaraokeList] = useState([])
     const [playing, setPlaying] = useState(false);
+    const [list, loading, error] = useCollection(
+        firebase.db.collection('songs').where('placeId', '==', props.match.params.place),
+        {
+            snapshotListenOptions: { includeMetadataChanges: true },
+        }
+    );
 
     useEffect(() => {
         var docRef = firebase.db.collection("users").doc(props.match.params.place);
@@ -39,46 +44,31 @@ function Main(props) {
         });
     }, [props.match.params.place, props.history])
 
-    useEffect(() => {
-        var songs = firebase.db.collection("songs");
-        songs.where('placeId', '==', props.match.params.place).get()
-            .then(snapshot => {
-                if (snapshot.empty) {
-                    console.log('No matching documents.');
-                    return;
-                }
-                var data = []
-                snapshot.forEach(doc => {
-                    data.push(doc.data())
-                });
-                setKaraokeList(data)
-            })
-            .catch(err => {
-                console.log('Error getting documents', err);
-            });
-    }, [props.match.params.place])
-
     function getVideoPlay() {
-        if (playing === true && karaokeList.length <= 0) {
-            alert('Não há proximos na fila')
-        } else if (playing === true && karaokeList.length > 0) {
-            setPlaying(false)
-            let kara = karaokeList[0]
-            deleteLink(kara.id)
-            var firstVideo = karaokeList[0]
-            setFirstVideoPlay(firstVideo)
-            setTimeout(() => {
-                setPlaying(true)
-            }, 5000)
-        } else if (playing === false && karaokeList.length >= 0) {
-            let kara = karaokeList[0]
-            deleteLink(kara.id)
-            firstVideo = karaokeList[0]
-            setFirstVideoPlay(firstVideo)
-            setTimeout(() => {
-                setPlaying(true)
-            }, 5000)
-        }
+        list.docs.map(doc => {
+            console.log(doc.id, doc.data().createdAt)
+        })
+
+        // if (playing === true && list.length <= 0) {
+        //     alert('Não há proximos na fila')
+        // } else if (playing === true && list.length > 0) {
+        //     setPlaying(false)
+        //     let kara = list[0]
+        //     var firstVideo = list[0]
+        //     deleteLink(kara.id)
+        //     setFirstVideoPlay(firstVideo)
+        //     setTimeout(() => {
+        //         setPlaying(true)
+        //     }, 5000)
+        // } else if (playing === false && list.length >= 0) {
+        //     let kara = list[0]
+        //     deleteLink(kara.id)
+        //     firstVideo = list[0]
+        //     setFirstVideoPlay(firstVideo)
+        //     setTimeout(() => {
+        //         setPlaying(true)
+        //     }, 5000)
+        // }
     }
 
     async function getDuration(youtubeId) {
@@ -99,41 +89,24 @@ function Main(props) {
         let duration = await getDuration(youtubeId)
         let durationParse = moment.duration(duration).asMinutes();
         firebase.db.collection("songs").doc().set({
-            id: uuid(),
             url: newKaraokeItem,
             youtubeId: youtubeId,
             duration: durationParse,
             author: user.displayName,
             authorId: user.uid,
-            createdAt: new Date().toDateString(),
+            createdAt: new Date(),
             placeId: props.match.params.place
         })
-        // setKaraokeList([...karaokeList, {
-        //     id: uuid(),
-        //     url: newKaraokeItem,
-        //     youtubeId: youtubeId,
-        //     duration: durationParse,
-        //     author: 'Iago Bontempo',
-        //     authorId: 1565548,
-        //     createdAt: new Date().toLocaleString()
-        // }])
     }
 
     function deleteLink(id) {
-        var toDelete = firebase.db.collection("songs")
-        toDelete.where('id', '==', id).get()
-            .then(snapshot => {
-                snapshot.forEach(doc => {
-                    var data = doc.id
-                    return firebase.db.collection("songs").doc(data).delete()
-                });
-            })
+        firebase.db.collection("songs").doc(id).delete()
     }
 
-    function deleteLinkPlaying(id) {
-        let filteredKaraokeList = karaokeList.filter(k => k.id !== id);
-        setKaraokeList(filteredKaraokeList)
-    }
+    // function deleteLinkPlaying(id) {
+    //     let filteredKaraokeList = karaokeList.filter(k => k.id !== id);
+    //     setKaraokeList(filteredKaraokeList)
+    // }
 
     if (initialising) {
         return (
@@ -156,15 +129,15 @@ function Main(props) {
                                 <span className="neon-orange">Karaoke</span>
                                 <span className="neon-blue">Night</span>
                             </h1>
-                            <Button inverted color='teal' onClick={getVideoPlay} content={`Proximo: ${karaokeList[0] ? karaokeList[0].author : 'Ninguem 😢'}`} icon='right arrow' labelPosition='right' />
+                            <Button inverted color='teal' onClick={getVideoPlay} content={`Proximo: ${list[0] ? list[0].author : 'Ninguem 😢'}`} icon='right arrow' labelPosition='right' />
                         </Blocker>
                     }
                     <div>
                         <h1>Senha: {place.pass}</h1>
                     </div>
-                    {user !== null && user.uid === props.match.params.place &&
-                        <button onClick={getVideoPlay}>PROXIMO: {karaokeList[0] ? karaokeList[0].author : 'Ninguem 😢'}</button>
-                    }
+                    {/* {user !== null && user.uid === props.match.params.place &&
+                        <button onClick={getVideoPlay}>PROXIMO: {list[0] ? list[0].author : 'Ninguem 😢'}</button>
+                    } */}
                     <Play id={firstVideoPlay.id}
                         youtubeId={firstVideoPlay.youtubeId}
                         duration={firstVideoPlay.duration}
@@ -172,16 +145,22 @@ function Main(props) {
                         author={firstVideoPlay.author}
                     />
                     <ul>
-                        {karaokeList && karaokeList.map(l => (
-                            <ListItem key={l.id}
-                                url={l.url}
-                                youtubeId={l.youtubeId}
-                                duration={l.duration}
-                                author={l.author}
-                                createdAt={l.createdAt}
-                                delete={() => deleteLink(l.id)}
-                            />
-                        ))}
+                        {error && <strong>Error: {JSON.stringify(error)}</strong>}
+                        {loading && <span>Collection: Loading...</span>}
+                        {list && (
+                            <span>
+                                {list.docs.map(doc => (
+                                    <ListItem key={doc.id}
+                                        url={doc.data().url}
+                                        youtubeId={doc.data().youtubeId}
+                                        duration={doc.data().duration}
+                                        author={doc.data().author}
+                                        createdAt={doc.data().createdAt}
+                                        delete={() => deleteLink(doc.id)}
+                                    />
+                                ))}
+                            </span>
+                        )}
                     </ul>
                     <Divider horizontal>
                         <Header as='h4' style={{ color: '#fff' }}>

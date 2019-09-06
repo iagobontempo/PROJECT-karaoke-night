@@ -45,7 +45,7 @@ function Places() {
                 <div>
                     <h2>Meu local</h2>
                     <p>
-                        Identificador: {user.uid} <br />
+                        Identificador: {user && user.uid} <br />
                         Senha para conexão: diadorock
                     </p>
                 </div>
