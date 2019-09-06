@@ -31,12 +31,16 @@ class Firebase {
 
     async register(firstName, lastName, email, password) {
         await this.auth.createUserWithEmailAndPassword(email, password)
-        return this.db.collection('users').doc(this.auth.currentUser.uid).set({
-            firstName: firstName,
-            lastName: lastName,
-            uid: this.auth.currentUser.uid,
-            pass: firstName + lastName
-        })
+        return this.auth.currentUser.updateProfile({
+            displayName: `${firstName} ${lastName}`
+        }).then(() =>
+            this.db.collection('users').doc(this.auth.currentUser.uid).set({
+                firstName: firstName,
+                lastName: lastName,
+                uid: this.auth.currentUser.uid,
+                pass: firstName + lastName
+            })
+        )
     }
 
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import { Container, Wrapper } from './styles';
 import { Input, Button, Dimmer, Loader } from 'semantic-ui-react';
@@ -45,7 +45,7 @@ function Places() {
                 <div>
                     <h2>Meu local</h2>
                     <p>
-                        Identificador: X4548s51q258-84a115 <br />
+                        Identificador: {user.uid} <br />
                         Senha para conexão: diadorock
                     </p>
                 </div>

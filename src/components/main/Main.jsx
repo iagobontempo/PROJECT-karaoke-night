@@ -21,10 +21,8 @@ function Main(props) {
 
     const [pass, setPass] = useState('')
     const [place, setPlace] = useState({})
-    const [firstVideoPlay, setFirstVideoPlay] = useState({ id: 1, url: 'https://www.youtube.com/watch?v=668nUCeBHyY', youtubeId: '668nUCeBHyY', duration: '5', author: 'PRIMEIRO', createdAt: 5551548, authorId: 555984 })
-    const [karaokeList, setKaraokeList] = useState([
-        { id: 1, url: 'https://www.youtube.com/watch?v=668nUCeBHyY', youtubeId: '668nUCeBHyY', duration: '5', author: 'SEGUNDO', createdAt: 5551548, authorId: 555984 },
-    ])
+    const [firstVideoPlay, setFirstVideoPlay] = useState({ author: 'Ninguem' })
+    const [karaokeList, setKaraokeList] = useState([])
     const [playing, setPlaying] = useState(false);
 
     useEffect(() => {
@@ -40,6 +38,25 @@ function Main(props) {
             console.log("Error getting document:", error);
         });
     }, [props.match.params.place, props.history])
+
+    useEffect(() => {
+        var songs = firebase.db.collection("songs");
+        songs.where('placeId', '==', props.match.params.place).get()
+            .then(snapshot => {
+                if (snapshot.empty) {
+                    console.log('No matching documents.');
+                    return;
+                }
+                var data = []
+                snapshot.forEach(doc => {
+                    data.push(doc.data())
+                });
+                setKaraokeList(data)
+            })
+            .catch(err => {
+                console.log('Error getting documents', err);
+            });
+    }, [props.match.params.place])
 
     function getVideoPlay() {
         if (playing === true && karaokeList.length <= 0) {
@@ -80,19 +97,40 @@ function Main(props) {
     async function addLink(newKaraokeItem) {
         let youtubeId = youtubeParser(newKaraokeItem)
         let duration = await getDuration(youtubeId)
-        let durationParse = moment.duration(duration).asSeconds();
-        setKaraokeList([...karaokeList, {
+        let durationParse = moment.duration(duration).asMinutes();
+        firebase.db.collection("songs").doc().set({
             id: uuid(),
             url: newKaraokeItem,
             youtubeId: youtubeId,
             duration: durationParse,
-            author: 'Iago Bontempo',
-            authorId: 1565548,
-            createdAt: new Date().toLocaleString()
-        }])
+            author: user.displayName,
+            authorId: user.uid,
+            createdAt: new Date().toDateString(),
+            placeId: props.match.params.place
+        })
+        // setKaraokeList([...karaokeList, {
+        //     id: uuid(),
+        //     url: newKaraokeItem,
+        //     youtubeId: youtubeId,
+        //     duration: durationParse,
+        //     author: 'Iago Bontempo',
+        //     authorId: 1565548,
+        //     createdAt: new Date().toLocaleString()
+        // }])
     }
 
     function deleteLink(id) {
+        var toDelete = firebase.db.collection("songs")
+        toDelete.where('id', '==', id).get()
+            .then(snapshot => {
+                snapshot.forEach(doc => {
+                    var data = doc.id
+                    return firebase.db.collection("songs").doc(data).delete()
+                });
+            })
+    }
+
+    function deleteLinkPlaying(id) {
         let filteredKaraokeList = karaokeList.filter(k => k.id !== id);
         setKaraokeList(filteredKaraokeList)
     }
