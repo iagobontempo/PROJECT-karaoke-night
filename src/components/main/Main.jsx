@@ -122,10 +122,11 @@ function Main(props) {
                         </Blocker>
                     }
                     <div>
-                        <h1>Bem vindo ao karaoke do {place.firstName}</h1>
                         <h1>Senha: {place.pass}</h1>
                     </div>
-                    <button onClick={getVideoPlay}>PROXIMO: {karaokeList[0] ? karaokeList[0].author : 'Ninguem 😢'}</button>
+                    {user !== null && user.uid === props.match.params.place &&
+                        <button onClick={getVideoPlay}>PROXIMO: {karaokeList[0] ? karaokeList[0].author : 'Ninguem 😢'}</button>
+                    }
                     <Play id={firstVideoPlay.id}
                         youtubeId={firstVideoPlay.youtubeId}
                         duration={firstVideoPlay.duration}

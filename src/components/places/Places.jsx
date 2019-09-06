@@ -1,14 +1,27 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { Link, Redirect } from 'react-router-dom'
 import { Container, Wrapper } from './styles';
-import { Input, Button } from 'semantic-ui-react';
-
+import { Input, Button, Dimmer, Loader } from 'semantic-ui-react';
+import firebase from '../../firebase'
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 function Places() {
     const [joinId, setJoinId] = useState('')
+    const [user, initialising] = useAuthState(firebase.auth);
+
+    if (initialising) {
+        return (
+            <div>
+                <Dimmer active>
+                    <Loader size='massive'>Loading</Loader>
+                </Dimmer>
+            </div>
+        );
+    }
 
     return (
         <Container>
+            {user === null && <Redirect to='/login' />}
             <Wrapper>
                 <div>
                     <h2>
