@@ -1,22 +1,34 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { Link, Redirect } from 'react-router-dom'
+import firebase from '../../firebase'
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 import { Container, Wrapper } from './styles'
 import { Input, Icon, Button, Divider } from 'semantic-ui-react'
 
-function Register() {
+function Register(props) {
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
+    const [user] = useAuthState(firebase.auth);
+
+    const [error, setError] = useState()
+
     function handleSubmit(e) {
         e.preventDefault()
-        console.log(firstName, lastName, email, password)
+        firebase.register(firstName, lastName, email, password).then(() => {
+            props.history.push('/')
+        }).catch((err) => {
+            setError(err.message)
+            console.log(err)
+        })
     }
 
     return (
         <Container>
+            {user !== null && <Redirect to='/' />}
             <Wrapper>
                 <h1>REGISTRAR</h1>
                 <Icon inverted name='users' size='huge' />
@@ -30,6 +42,7 @@ function Register() {
                     <Input icon='lock' iconPosition='left' placeholder='Senha' type="password" required
                         name='password' onChange={e => setPassword(e.target.value)} />
                     <Divider />
+                    {error && <div>{error}</div>}
                     <Button fluid >REGISTRAR</Button>
                     <Link to='/login'>Já tem cadastro?</Link>
                 </form>

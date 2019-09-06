@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
+import { Redirect } from 'react-router-dom'
 import axios from 'axios';
 import uuid from 'uuid'
 import moment from 'moment'
 import firebase from '../../firebase'
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 import './title.css'
 
@@ -11,10 +13,12 @@ import YoutubeForm from './YoutubeForm'
 
 import { MainContainer, Wrapper, Blocker } from './styles'
 
-import { Divider, Header, Icon, Button, Input } from 'semantic-ui-react'
+import { Divider, Header, Icon, Button, Input, Dimmer, Loader } from 'semantic-ui-react'
 import Play from './Play';
 
 function Main(props) {
+    const [user, initialising] = useAuthState(firebase.auth);
+
     const [pass, setPass] = useState('')
     const [place, setPlace] = useState({})
     const [firstVideoPlay, setFirstVideoPlay] = useState({ id: 1, url: 'https://www.youtube.com/watch?v=668nUCeBHyY', youtubeId: '668nUCeBHyY', duration: '5', author: 'PRIMEIRO', createdAt: 5551548, authorId: 555984 })
@@ -35,7 +39,7 @@ function Main(props) {
         }).catch(function (error) {
             console.log("Error getting document:", error);
         });
-    }, [props.match.params.place])
+    }, [props.match.params.place, props.history])
 
     function getVideoPlay() {
         if (playing === true && karaokeList.length <= 0) {
@@ -93,8 +97,19 @@ function Main(props) {
         setKaraokeList(filteredKaraokeList)
     }
 
+    if (initialising) {
+        return (
+            <div>
+                <Dimmer active>
+                    <Loader size='massive'>Loading</Loader>
+                </Dimmer>
+            </div>
+        );
+    }
+
     return (
         <MainContainer>
+            {user === null && <Redirect to='/login' />}
             {pass === place.pass ? (
                 <Wrapper>
                     {playing &&

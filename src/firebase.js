@@ -1,7 +1,3 @@
-//! SAVING INFORMATION NOT USING ANYTHING HERE
-//! SAVING INFORMATION NOT USING ANYTHING HERE
-//! SAVING INFORMATION NOT USING ANYTHING HERE
-
 import app from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/firebase-firestore'
@@ -35,33 +31,14 @@ class Firebase {
 
     async register(firstName, lastName, email, password) {
         await this.auth.createUserWithEmailAndPassword(email, password)
-        return this.auth.currentUser.updateProfile({ displayName: `${firstName} ${lastName}` })
-    }
-
-    addUser(firstName, lastName) {
-        if (!this.auth.currentUser) {
-            return alert('Não autorizado')
-        }
         return this.db.collection('users').doc(this.auth.currentUser.uid).set({
             firstName: firstName,
             lastName: lastName,
-            uid: this.auth.currentUser.uid
+            uid: this.auth.currentUser.uid,
+            pass: firstName + lastName
         })
     }
 
-    async getPlace(placeId) {
-        var place = await this.db.collection('users').doc(placeId)
-        place.get()
-            .then((doc) => {
-                if (doc.exists) {
-                    console.log('Document data:', doc.data())
-                } else {
-                    console.log('Document does not exist')
-                }
-            }).catch(function (error) {
-                console.log("Error getting document:", error);
-            })
-    }
 }
 
 export default new Firebase()
