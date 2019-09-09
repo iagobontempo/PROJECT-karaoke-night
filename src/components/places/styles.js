@@ -19,5 +19,9 @@ export const Wrapper = styled.div`
     margin-top: 15px;
     padding: 10px;
 
+    input {
+        width: 100%;
+    }
+
     
 `
