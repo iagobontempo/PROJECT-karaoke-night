@@ -167,6 +167,8 @@ function Main(props) {
                                         youtubeId={doc.data().youtubeId}
                                         duration={doc.data().duration}
                                         author={doc.data().author}
+                                        authorId={doc.data().authorId}
+                                        placeOwner={props.match.params.place}
                                         createdAt={doc.data().createdAt}
                                         delete={() => deleteLink(doc.id)}
                                     />))}

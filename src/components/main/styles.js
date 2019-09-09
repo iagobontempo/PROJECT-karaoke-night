@@ -45,6 +45,7 @@ export const Li = styled.li`
     width: 100%;
     font-size: 24px;
     border-bottom: 1px solid #D4250050;
+    padding: 10px 0px;
 
     :first-child {
         border-bottom: 2px solid #00B2FF98;

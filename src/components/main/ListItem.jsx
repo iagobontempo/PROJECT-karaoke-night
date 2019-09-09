@@ -1,28 +1,27 @@
 import React from 'react'
+import firebase from '../../firebase'
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 import { Button, Icon } from 'semantic-ui-react'
 
 import { Li } from './styles'
 
 function ListItem(props) {
-
-    // url: {props.url}
-    // youtubeId: {props.youtubeId} 
-    // duration: {props.duration}
-    // author: {props.author} 
-    // createdAt: {props.createdAt}
+    const [user, initialising] = useAuthState(firebase.auth);
 
     return (
         <Li key={props.id}>
             <section>
                 {props.author} <span>{props.duration}</span>
             </section>
-            <Button animated onClick={props.delete}>
-                <Button.Content hidden>Delete</Button.Content>
-                <Button.Content visible>
-                    <Icon name='trash' />
-                </Button.Content>
-            </Button>
+            {user !== null && user.uid === props.authorId &&
+                < Button animated onClick={props.delete}>
+                    <Button.Content hidden>Delete</Button.Content>
+                    <Button.Content visible>
+                        <Icon name='trash' />
+                    </Button.Content>
+                </Button>
+            }
         </Li >
     )
 }
