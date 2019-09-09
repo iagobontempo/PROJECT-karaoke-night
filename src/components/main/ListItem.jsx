@@ -9,10 +9,12 @@ import { Li } from './styles'
 function ListItem(props) {
     const [user] = useAuthState(firebase.auth);
 
+    const formatedDuration = props.duration.toString().split('.')[0]
+
     return (
         <Li key={props.id}>
             <section>
-                {props.author} <span>{props.duration}</span>
+                {props.author} <span> ≈ {formatedDuration} min</span>
             </section>
             {user !== null && user.uid === props.authorId &&
                 < Button animated onClick={props.delete}>
