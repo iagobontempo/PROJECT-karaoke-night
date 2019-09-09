@@ -13,7 +13,6 @@ function Play(props) {
                         <span>{props.author} está cantando</span>
                     </section>
                 )}
-
         </ContainerVideo>
     )
 }

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
 import axios from 'axios';
-import uuid from 'uuid'
 import moment from 'moment'
 import firebase from '../../firebase'
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -21,20 +20,23 @@ function Main(props) {
     const [user, initialising] = useAuthState(firebase.auth);
     const [pass, setPass] = useState('')
     const [place, setPlace] = useState({})
+
     const [firstVideoPlay, setFirstVideoPlay] = useState({ author: 'Ninguem' })
+    const [next, setNext] = useState()
     const [playing, setPlaying] = useState(false);
+
     const [list, loading, error] = useCollection(
-        firebase.db.collection('songs').where('placeId', '==', props.match.params.place),
+        firebase.db.collection('songs').orderBy('createdAt'),
         {
             snapshotListenOptions: { includeMetadataChanges: true },
         }
     );
 
     useEffect(() => {
-        var docRef = firebase.db.collection("users").doc(props.match.params.place);
-        docRef.get().then(function (doc) {
-            if (doc.exists) {
-                setPlace(doc.data())
+        var place = firebase.db.collection("users").doc(props.match.params.place);
+        place.get().then(function (place) {
+            if (place.exists) {
+                setPlace(place.data())
             } else {
                 alert('Local invalido')
                 props.history.push('/')
@@ -45,30 +47,44 @@ function Main(props) {
     }, [props.match.params.place, props.history])
 
     function getVideoPlay() {
+        let newList = []
         list.docs.map(doc => {
-            console.log(doc.id, doc.data().createdAt)
+            if (doc.data().placeId === props.match.params.place) {
+                let song = ({
+                    id: doc.id,
+                    youtubeId: doc.data().youtubeId,
+                    duration: doc.data().duration,
+                    author: doc.data().author
+                })
+                newList.push(song)
+            }
         })
-
-        // if (playing === true && list.length <= 0) {
-        //     alert('Não há proximos na fila')
-        // } else if (playing === true && list.length > 0) {
-        //     setPlaying(false)
-        //     let kara = list[0]
-        //     var firstVideo = list[0]
-        //     deleteLink(kara.id)
-        //     setFirstVideoPlay(firstVideo)
-        //     setTimeout(() => {
-        //         setPlaying(true)
-        //     }, 5000)
-        // } else if (playing === false && list.length >= 0) {
-        //     let kara = list[0]
-        //     deleteLink(kara.id)
-        //     firstVideo = list[0]
-        //     setFirstVideoPlay(firstVideo)
-        //     setTimeout(() => {
-        //         setPlaying(true)
-        //     }, 5000)
-        // }
+        if (playing === true && newList[0] === undefined) {
+            alert('Não há proximos na fila')
+        } else if (playing === true && newList[0] !== undefined) {
+            setPlaying(false)
+            setFirstVideoPlay(newList[0])
+            deleteLink(newList[0].id)
+            setTimeout(() => {
+                setPlaying(true)
+            }, 5000)
+            if (newList[1] !== undefined) {
+                setNext(newList[1].author)
+            } else if (newList[1] === undefined) {
+                setNext('Ninguem')
+            }
+        } else if (playing === false && newList[0] !== undefined) {
+            setFirstVideoPlay(newList[0])
+            deleteLink(newList[0].id)
+            setTimeout(() => {
+                setPlaying(true)
+            }, 5000)
+            if (newList[1] !== undefined) {
+                setNext(newList[1].author)
+            } else if (newList[1] === undefined) {
+                setNext('Ninguem')
+            }
+        }
     }
 
     async function getDuration(youtubeId) {
@@ -94,7 +110,7 @@ function Main(props) {
             duration: durationParse,
             author: user.displayName,
             authorId: user.uid,
-            createdAt: new Date(),
+            createdAt: new Date().getTime(),
             placeId: props.match.params.place
         })
     }
@@ -102,11 +118,6 @@ function Main(props) {
     function deleteLink(id) {
         firebase.db.collection("songs").doc(id).delete()
     }
-
-    // function deleteLinkPlaying(id) {
-    //     let filteredKaraokeList = karaokeList.filter(k => k.id !== id);
-    //     setKaraokeList(filteredKaraokeList)
-    // }
 
     if (initialising) {
         return (
@@ -129,15 +140,15 @@ function Main(props) {
                                 <span className="neon-orange">Karaoke</span>
                                 <span className="neon-blue">Night</span>
                             </h1>
-                            <Button inverted color='teal' onClick={getVideoPlay} content={`Proximo: ${list[0] ? list[0].author : 'Ninguem 😢'}`} icon='right arrow' labelPosition='right' />
+                            <Button inverted color='teal' onClick={getVideoPlay} content={`Proximo: ${next ? next : 'Ninguem 😢'}`} icon='right arrow' labelPosition='right' />
                         </Blocker>
                     }
                     <div>
                         <h1>Senha: {place.pass}</h1>
                     </div>
-                    {/* {user !== null && user.uid === props.match.params.place &&
-                        <button onClick={getVideoPlay}>PROXIMO: {list[0] ? list[0].author : 'Ninguem 😢'}</button>
-                    } */}
+                    {user !== null && user.uid === props.match.params.place &&
+                        <Button onClick={getVideoPlay}>PROXIMO!</Button>
+                    }
                     <Play id={firstVideoPlay.id}
                         youtubeId={firstVideoPlay.youtubeId}
                         duration={firstVideoPlay.duration}
@@ -150,6 +161,7 @@ function Main(props) {
                         {list && (
                             <span>
                                 {list.docs.map(doc => (
+                                    doc.data().placeId === props.match.params.place &&
                                     <ListItem key={doc.id}
                                         url={doc.data().url}
                                         youtubeId={doc.data().youtubeId}
@@ -157,8 +169,7 @@ function Main(props) {
                                         author={doc.data().author}
                                         createdAt={doc.data().createdAt}
                                         delete={() => deleteLink(doc.id)}
-                                    />
-                                ))}
+                                    />))}
                             </span>
                         )}
                     </ul>

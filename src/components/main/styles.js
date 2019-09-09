@@ -48,6 +48,15 @@ export const Li = styled.li`
 
     :first-child {
         border-bottom: 2px solid #00B2FF98;
+        :before {
+            font-size: 10px;
+            content: "PROXIMO";
+            color: #C229F8;
+            border-radius: 5px;
+            border: 1px solid;
+            padding: 2px;
+            margin-right: 5px;
+        }
     }
     
     section {
