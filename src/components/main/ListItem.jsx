@@ -7,7 +7,7 @@ import { Button, Icon } from 'semantic-ui-react'
 import { Li } from './styles'
 
 function ListItem(props) {
-    const [user, initialising] = useAuthState(firebase.auth);
+    const [user] = useAuthState(firebase.auth);
 
     return (
         <Li key={props.id}>

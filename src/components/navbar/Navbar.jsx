@@ -18,19 +18,18 @@ function Navbar(props) {
 
     return (
         <Container>
-            <h1>
+            <NavLink to='/login'>
                 <span className="neon-orange-nav">Karaoke</span>
                 <span className="neon-blue-nav">Night</span>
-            </h1>
+            </NavLink>
 
             {user === null ? (
                 <>
-                    <NavLink to='/login'><Button>Login</Button></NavLink>
+                    <NavLink to='/login'><Button compact color='teal' inverted>Login</Button></NavLink>
                 </>
             ) : (
                     <>
-                        <NavLink to='/'><Button>Inicio</Button></NavLink>
-                        <Button onClick={handleLogout}>Logout</Button>
+                        <Button onClick={handleLogout} color='teal' inverted>Logout</Button>
                     </>
                 )}
 
