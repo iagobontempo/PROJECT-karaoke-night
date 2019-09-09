@@ -143,9 +143,6 @@ function Main(props) {
                             <Button inverted color='teal' onClick={getVideoPlay} content={`Proximo: ${next ? next : 'Ninguem 😢'}`} icon='right arrow' labelPosition='right' />
                         </Blocker>
                     }
-                    <div>
-                        <h1>Senha: {place.pass}</h1>
-                    </div>
                     {user !== null && user.uid === props.match.params.place &&
                         <Button onClick={getVideoPlay}>PROXIMO!</Button>
                     }
@@ -154,6 +151,7 @@ function Main(props) {
                         duration={firstVideoPlay.duration}
                         playing={playing}
                         author={firstVideoPlay.author}
+                        pass={place.pass}
                     />
                     <ul>
                         {error && <strong>Error: {JSON.stringify(error)}</strong>}
