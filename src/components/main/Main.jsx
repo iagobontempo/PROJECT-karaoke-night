@@ -11,7 +11,7 @@ import './title.css'
 import ListItem from './ListItem';
 import YoutubeForm from './YoutubeForm'
 
-import { MainContainer, Wrapper, Blocker } from './styles'
+import { MainContainer, Wrapper, Blocker, QrCode, QrCodeDiv } from './styles'
 
 import { Divider, Header, Icon, Button, Input, Dimmer, Loader } from 'semantic-ui-react'
 import Play from './Play';
@@ -135,13 +135,20 @@ function Main(props) {
             {pass === place.pass ? (
                 <Wrapper>
                     {playing &&
-                        <Blocker>
-                            <h1 style={{ marginTop: 10 }}>
-                                <span className="neon-orange">Karaoke</span>
-                                <span className="neon-blue">Night</span>
-                            </h1>
-                            <Button inverted color='teal' onClick={getVideoPlay} content={`Proximo: ${next ? next : 'Ninguem 😢'}`} icon='right arrow' labelPosition='right' />
-                        </Blocker>
+                        <>
+                            <Blocker>
+                                <h1 style={{ marginTop: 10 }}>
+                                    <span className="neon-orange">Karaoke</span>
+                                    <span className="neon-blue">Night</span>
+                                </h1>
+                                <Button inverted color='teal' onClick={getVideoPlay} content={`Proximo: ${next ? next : 'Ninguem 😢'}`} icon='right arrow' labelPosition='right' />
+                                <QrCodeDiv>
+                                    <QrCode src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://karaoke-night.web.app/${props.match.params.place}`} alt="QRCODE" />
+                                    <div>Entre</div>
+                                    <div style={{ fontSize: 10, lineHeight: 1 }}><Icon name='unlock' size='small' />{place.pass}</div>
+                                </QrCodeDiv>
+                            </Blocker>
+                        </>
                     }
                     {user !== null && user.uid === props.match.params.place &&
                         <Button onClick={getVideoPlay}>PROXIMO!</Button>
@@ -152,6 +159,7 @@ function Main(props) {
                         playing={playing}
                         author={firstVideoPlay.author}
                         pass={place.pass}
+                        place={props.match.params.place}
                     />
                     <ul>
                         {error && <strong>Error: {JSON.stringify(error)}</strong>}

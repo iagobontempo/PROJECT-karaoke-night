@@ -64,11 +64,18 @@ export const Li = styled.li`
         display: flex;
         justify-content: space-between;
         width: 100%;
+        span.name {
+            width: 180px;
+            padding: 5px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
     }
 `
 
 export const ContainerVideo = styled.div`
-    font-size: 30px;
+    font-size: 15px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -113,4 +120,30 @@ export const Blocker = styled.div`
     display: flex;
     justify-content: space-around;
     align-items: center;
+`
+
+
+export const QrCode = styled.img`
+    display: flex;
+    margin: 0 auto;
+`
+
+export const QrCodeDiv = styled.div`
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    left: 10px;
+    top: 200%;
+    background-color: #68F4F4;
+    border-radius: 7px;
+    border: 1px solid #68F4F4;
+    padding: 2px;
+
+    div {
+        font-size: 16px;
+        font-weight: 900;
+        color: #000;
+        display: flex;
+        margin: 0 auto;
+    }
 `

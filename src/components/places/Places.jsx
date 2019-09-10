@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link, Redirect } from 'react-router-dom'
-import { Container, Wrapper } from './styles';
-import { Input, Button, Dimmer, Loader, Divider } from 'semantic-ui-react';
+import { Container, Wrapper, QrCode } from './styles';
+import { Input, Button, Dimmer, Loader, Divider, Icon, Header } from 'semantic-ui-react';
 import firebase from '../../firebase'
 import { useAuthState } from 'react-firebase-hooks/auth';
 
@@ -9,6 +9,7 @@ function Places() {
     const [joinId, setJoinId] = useState('')
     const [user, initialising] = useAuthState(firebase.auth);
     const [toggle, setToggle] = useState(false)
+    const [myPlaceToggle, setMyPlaceToggle] = useState(false)
 
     if (initialising) {
         return (
@@ -50,21 +51,46 @@ function Places() {
                 <div>
                     <h2>
                         Conectar a um local
+                        <Divider horizontal>
+                            <Header as='h4' style={{ color: '#fff' }}>
+                                <Icon name='qrcode' />
+                                QR-Code
+                            </Header>
+                        </Divider>
+
+                        <Input icon placeholder='QRCode'>
+                            <Icon name='qrcode' />
+                            <input type="file"
+                                accept="image/*"
+                                capture="environment"
+                                tabIndex='-1' />
+                        </Input>
+
+                        <Divider horizontal>
+                            <Header as='h4' style={{ color: '#fff' }}>
+                                <Icon name='write' />
+                                Identificador
+                            </Header>
+                        </Divider>
+
                         <form>
                             <Input style={{ width: '100%' }} placeholder='ID do local' name="joinId" onChange={e => setJoinId(e.target.value)} />
                             <Link to={`/${joinId}`}>
-                                <Button Button attached='bottom' >Conectar</Button>
+                                <Button attached='bottom' >Conectar</Button>
                             </Link>
                         </form>
                     </h2>
                 </div>
                 <Divider />
                 <div>
-                    <h2>Meu local</h2>
-                    <p>
-                        Identificador: {user && user.uid} <br />
-                        Senha para conexão: {user && user.displayName.replace(" ", "")}
-                    </p>
+                    <Button style={{ width: '100%' }} onClick={() => setMyPlaceToggle(!myPlaceToggle)}>Meu Local</Button>
+                    {myPlaceToggle && (
+                        <div>
+                            <QrCode src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://karaoke-night.web.app/${user.uid}`} alt="QRCODE" />
+                            Identificador: {user && user.uid} <br />
+                            Senha para conexão: {user && user.displayName.replace(" ", "")}
+                        </div>)
+                    }
                 </div>
             </Wrapper>
         </Container>

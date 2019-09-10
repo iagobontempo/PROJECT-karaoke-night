@@ -13,7 +13,6 @@ export const Wrapper = styled.div`
     color: #ffffff;
     display: flex;
     flex-direction: column;
-    /* align-items: center; */
     width: 350px;
     border-radius: 10px;
     margin-top: 15px;
@@ -23,5 +22,13 @@ export const Wrapper = styled.div`
         width: 100%;
     }
 
-    
+    input[type=file] {
+        overflow: hidden;
+    }
+
+`
+
+export const QrCode = styled.img`
+    display: flex;
+    margin: 0 auto;
 `

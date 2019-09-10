@@ -14,7 +14,8 @@ function ListItem(props) {
     return (
         <Li key={props.id}>
             <section>
-                {props.author} <span> ≈ {formatedDuration} min</span>
+                <span className='name'>{props.author}</span>
+                <span> ≈ {formatedDuration} min</span>
             </section>
             {user !== null && user.uid === props.authorId &&
                 < Button animated onClick={props.delete}>
