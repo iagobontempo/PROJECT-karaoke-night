@@ -3,13 +3,7 @@ import 'firebase/auth'
 import 'firebase/firebase-firestore'
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAPscv4EDn4J-2zWRARQhUcFt4z__s_S5U",
-    authDomain: "karaoke-night.firebaseapp.com",
-    databaseURL: "https://karaoke-night.firebaseio.com",
-    projectId: "karaoke-night",
-    storageBucket: "karaoke-night.appspot.com",
-    messagingSenderId: "36127425288",
-    appId: "1:36127425288:web:e2677ba01d101d8a"
+
 };
 // Initialize Firebase
 // app.initializeApp(firebaseConfig);
